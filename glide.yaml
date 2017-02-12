@@ -1,0 +1,6 @@
+package: github.com/david7482/go-plugin-playground
+import:
+- package: github.com/Sirupsen/logrus
+  version: ^0.11.2
+- package: github.com/x-cray/logrus-prefixed-formatter
+  version: ^0.3.2

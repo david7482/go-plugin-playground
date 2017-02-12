@@ -1,0 +1,18 @@
+hash: a58d79481ab5690527d7bb5d15a528a8e0e7d30c55601d13aac72dd37cbb1155
+updated: 2017-02-12T15:49:19.198299358Z
+imports:
+- name: github.com/mattn/go-colorable
+  version: 5411d3eea5978e6cdc258b30de592b60df6aba96
+- name: github.com/mattn/go-isatty
+  version: 281032e84ae07510239465db46bf442aa44b953a
+- name: github.com/mgutz/ansi
+  version: 9520e82c474b0a04dd04f8a40959027271bab992
+- name: github.com/Sirupsen/logrus
+  version: c078b1e43f58d563c74cebe63c85789e76ddb627
+- name: github.com/x-cray/logrus-prefixed-formatter
+  version: 9cd0cf058806896bf8ca66f9a957d36bd9e4ce0f
+- name: golang.org/x/sys
+  version: aaabbdc969c3935a2a7f61efac801e7163c73a2a
+  subpackages:
+  - unix
+testImports: []
