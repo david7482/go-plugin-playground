@@ -14,30 +14,32 @@ import (
 	"github.com/david7482/go-plugin-playground/common/logger"
 )
 
+func httpHandler(w http.ResponseWriter, r *http.Request) {
+	log := logger.NewLogger("request")
+
+	plugin_so := strings.Split(strings.ToLower(r.URL.Path), "/")[1] + ".so"
+
+	p, err := plugin.Open(plugin_so)
+	if err != nil || p == nil {
+		w.WriteHeader(http.StatusNotFound)
+		log.WithFields(logger.Fields{"plugin": plugin_so, "err": err.Error()}).WARN("Open plugin fail")
+		return
+	}
+
+	symbol, err := p.Lookup("ServeHTTP")
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		log.WithFields(logger.Fields{"plugin": plugin_so, "err": err.Error()}).WARN("Lookup symbol fail")
+		return
+	}
+
+	log.WithFields(logger.Fields{"plugin": plugin_so, "symbol": symbol}).INFO("Invoke plugin symbol")
+	serve_http := symbol.(func(http.ResponseWriter, *http.Request))
+	serve_http(w, r)
+}
+
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log := logger.NewLogger("request")
-
-		plugin_so := strings.Split(strings.ToLower(r.URL.Path), "/")[1] + ".so"
-
-		p, err := plugin.Open(plugin_so)
-		if err != nil || p == nil {
-			w.WriteHeader(http.StatusNotFound)
-			log.WithFields(logger.Fields{"plugin": plugin_so, "err": err.Error()}).WARN("Open plugin fail")
-			return
-		}
-
-		symbol, err := p.Lookup("ServeHTTP")
-		if err != nil {
-			w.WriteHeader(http.StatusNotFound)
-			log.WithFields(logger.Fields{"plugin": plugin_so, "err": err.Error()}).WARN("Lookup symbol fail")
-			return
-		}
-
-		log.WithFields(logger.Fields{"plugin": plugin_so, "symbol": symbol}).INFO("Invoke plugin symbol")
-		serve_http := symbol.(func(http.ResponseWriter, *http.Request))
-		serve_http(w, r)
-	})
+	http.HandleFunc("/", httpHandler)
 
 	log := logger.NewLogger("main")
 	log.INFO("Start WebService ...")
